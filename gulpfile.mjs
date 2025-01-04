@@ -4,6 +4,7 @@ import dartSass from 'sass';
 import gulpSass from 'gulp-sass';
 import concat from 'gulp-concat';
 import uglify from 'gulp-uglify-es';
+import cleanCSS from 'gulp-clean-css';
 import postcss from 'gulp-postcss';
 import autoprefixer from 'autoprefixer';
 import notify from 'gulp-notify';
@@ -18,7 +19,7 @@ import newer from 'gulp-newer';
 import svgSprite from 'gulp-svg-sprite';
 import ttf2woff2 from 'gulp-ttf2woff2';
 
-const JS_LIBS = [];
+const JS_LIBS = ['./node_modules/jquery/dist/jquery.js'];
 const CSS_LIBS = [];
 
 const sass = gulpSass(dartSass);
@@ -72,13 +73,16 @@ function sprites() {
 async function libsJS() {
 	if (JS_LIBS.length <= 0) return;
 
-	return src(JS_LIBS).pipe(concat('libs.min.js').pipe(uglify()).pipe(dest('src/js')));
+	return src(JS_LIBS).pipe(concat('libs.min.js')).pipe(uglify.default()).pipe(dest('src/js'));
 }
 
 async function libsCSS() {
 	if (CSS_LIBS.length <= 0) return;
 
-	return src(CSS_LIBS).pipe(concat('libs.min.css').pipe(dest('src/css')));
+	return src(CSS_LIBS)
+		.pipe(concat('libs.min.css'))
+		.pipe(cleanCSS({ compatibility: 'ie8' }))
+		.pipe(dest('src/css'));
 }
 
 function styles() {
