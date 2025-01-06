@@ -57,7 +57,9 @@ async function clean() {
 }
 
 function images() {
-	return src(['src/images/src/**/*', '!src/images/', '!src/images/src/**/*.svg'], { encoding: false })
+	return src(['src/images/src/**/*.png', 'src/images/src/**/*.jpg', '!src/images/', '!src/images/src/**/*.svg'], {
+		encoding: false,
+	})
 		.pipe(newer('./src/images/'))
 		.pipe(gulpAvif())
 		.pipe(dest('./src/images'));
@@ -146,7 +148,15 @@ function watchFiles() {
 
 function build() {
 	return src(
-		['src/css/*.css', 'src/fonts/*.woff2', 'src/images/*.avif', 'src/images/*.svg', 'src/js/**/*.js', 'src/*.html'],
+		[
+			'src/css/*.css',
+			'src/fonts/*.woff2',
+			'src/images/**/*.avif',
+			'src/images/**/*.svg',
+			'!src/images/src/**/*.svg',
+			'src/js/**/*.js',
+			'src/*.html',
+		],
 		{ base: 'src' },
 	).pipe(dest('local/templates/main/assets'));
 }
